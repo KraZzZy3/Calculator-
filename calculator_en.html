@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculator</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e2e8f0;
+            margin: 25px 0;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .label {
+            color: #4a5568;
+        }
+        .value {
+            font-weight: bold;
+            color: #1a202c;
+        }
+        .highlight {
+            background-color: #ebf8ff;
+            padding: 10px;
+            border-radius: 6px;
+            border-left: 4px solid #3182ce;
+        }
+        .highlight .value {
+            color: #2b6cb0;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Financial Calculator</h2>
+    
+    <!-- Inputs -->
+    <div class="input-group">
+        <label for="premium">Premium (£):</label>
+        <input type="number" id="premium" value="1949.69" step="0.01" oninput="calculate()">
+    </div>
+    
+    <div class="input-group">
+        <label for="depositRate">Deposit (%):</label>
+        <input type="number" id="depositRate" value="20" step="0.1" oninput="calculate()">
+    </div>
+
+    <div class="input-group">
+        <label for="commissionRate">Your Commission (%):</label>
+        <input type="number" id="commissionRate" value="5.42" step="0.01" oninput="calculate()">
+    </div>
+
+    <div class="input-group">
+        <label for="interestRate">Client Interest (%):</label>
+        <input type="number" id="interestRate" value="11" step="0.01" oninput="calculate()">
+    </div>
+
+    <div class="input-group">
+        <label for="facilityFee">Facility Fee (£):</label>
+        <input type="number" id="facilityFee" value="15" step="1" oninput="calculate()">
+    </div>
+
+    <hr>
+
+    <!-- Calculation Results -->
+    <div id="results">
+        <div class="result-item">
+            <span class="label">Step 1. Deposit:</span>
+            <span class="value" id="resDeposit">£0.00</span>
+        </div>
+        <div class="result-item">
+            <span class="label">Step 2. Amount Financed:</span>
+            <span class="value" id="resAmountFinanced">£0.00</span>
+        </div>
+        <div class="result-item">
+            <span class="label">Step 3. Commission (Yours):</span>
+            <span class="value" id="resCommission" style="color: #38a169;">£0.00</span>
+        </div>
+        <div class="result-item">
+            <span class="label">Step 4. Interest:</span>
+            <span class="value" id="resInterest">£0.00</span>
+        </div>
+        <div class="result-item">
+            <span class="label">Step 5. Credit Agreement Total:</span>
+            <span class="value" id="resTotalAgreement">£0.00</span>
+        </div>
+        <div class="result-item">
+            <span class="label">Step 6. Monthly Payment:</span>
+            <span class="value" id="resMonthly">£0.00</span>
+        </div>
+        
+        <br>
+        <div class="result-item highlight">
+            <span class="label">Step 7. First Payment:</span>
+            <span class="value" id="resFirstPayment">£0.00</span>
+        </div>
+        <br>
+        
+        <div class="result-item">
+            <span class="label">Step 8. Subsequent Payments:</span>
+            <span class="value" id="resNextPayments">10 payments of £0.00</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function calculate() {
+        const premium = parseFloat(document.getElementById('premium').value) || 0;
+        const depositRate = parseFloat(document.getElementById('depositRate').value) || 0;
+        const commissionRate = parseFloat(document.getElementById('commissionRate').value) || 0;
+        const interestRate = parseFloat(document.getElementById('interestRate').value) || 0;
+        const facilityFee = parseFloat(document.getElementById('facilityFee').value) || 0;
+
+        const deposit = premium * (depositRate / 100);
+        const amountFinanced = premium - deposit;
+        const commission = amountFinanced * (commissionRate / 100);
+        const interest = amountFinanced * (interestRate / 100);
+        const totalAgreement = amountFinanced + interest;
+        const monthlyPayment = totalAgreement / 10;
+        const firstPayment = monthlyPayment + facilityFee;
+
+        document.getElementById('resDeposit').innerText = '£' + deposit.toFixed(2);
+        document.getElementById('resAmountFinanced').innerText = '£' + amountFinanced.toFixed(2);
+        document.getElementById('resCommission').innerText = '£' + commission.toFixed(2);
+        document.getElementById('resInterest').innerText = '£' + interest.toFixed(2);
+        document.getElementById('resTotalAgreement').innerText = '£' + totalAgreement.toFixed(2);
+        document.getElementById('resMonthly').innerText = '£' + monthlyPayment.toFixed(2);
+        document.getElementById('resFirstPayment').innerText = '£' + firstPayment.toFixed(2);
+        document.getElementById('resNextPayments').innerText = '10 payments of £' + monthlyPayment.toFixed(2);
+    }
+
+    window.onload = calculate;
+</script>
+
+</body>
+</html>
